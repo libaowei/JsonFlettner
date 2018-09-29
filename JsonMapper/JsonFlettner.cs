@@ -3,13 +3,50 @@ using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 
 namespace JsonMapper
 {
-    public static class JsonFlettner
+    public static class JsonHandler
     {
-        //https://www.newtonsoft.com/json
-        public static Dictionary<string, object> Flettner(string json)
+        public static Dictionary<string, object> UnFlettn(string json)
+        {
+            dynamic expandoObject = JsonConvert.DeserializeObject<ExpandoObject>(json, new ExpandoObjectConverter());
+            var objectDictionary = expandoObject as IDictionary<string, object>;
+
+
+            return UnFlettnInner(objectDictionary);
+        }
+
+        private static Dictionary<string, object> UnFlettnInner(IDictionary<string, object> objectDictionary)
+        {
+            var result = new Dictionary<string, object>();
+
+            foreach (var item in objectDictionary)
+            {
+                var index = item.Key.IndexOf('.');
+                if (index > -1)
+                {
+                    var firstSection = item.Key.Substring(0, index);
+                    if (!result.ContainsKey(firstSection))
+                    {
+                        var innerDictionary = objectDictionary.Where(kvp => kvp.Key.StartsWith(firstSection)).ToDictionary(k => k.Key.Substring(index + 1), v => v.Value);
+                        var innerResult = UnFlettnInner(innerDictionary);
+
+                        result.Add(firstSection, innerResult);
+                    }
+                }
+                else
+                {
+                    result.Add(item.Key, item.Value);
+                }
+            }
+
+            return result;
+        }
+
+
+        public static Dictionary<string, object> Flettn(string json)
         {
             dynamic fullObject = JsonConvert.DeserializeObject<ExpandoObject>(json, new ExpandoObjectConverter());
 
@@ -19,10 +56,10 @@ namespace JsonMapper
         private static Dictionary<string, object> GetInner(ExpandoObject expandoObject)
         {
             var result = new Dictionary<string, object>();
-            var objectdictionary = expandoObject as IDictionary<string, object>;
+            var objectDictionary = expandoObject as IDictionary<string, object>;
             Type expendoType = typeof(ExpandoObject);
 
-            foreach (var item in objectdictionary)
+            foreach (var item in objectDictionary)
             {
                 if (item.Value.GetType() != expendoType)
                 {

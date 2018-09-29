@@ -54,6 +54,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="second.json" />
     <None Include="source.json" />
     <None Include="target.json" />
   </ItemGroup>
