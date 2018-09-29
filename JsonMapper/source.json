@@ -1,0 +1,15 @@
+{
+    "firstName": "michael",
+    "lastName": "berezin",
+    "age": 35,
+    "isActive": true,
+    "address": {
+        "city": "tel aviv",
+        "street": "Yakov Sela",
+        "houseNumber": 28,
+        "random": {
+            "zip": 1551,
+            "nickname": "home"
+        }
+    }
+}
