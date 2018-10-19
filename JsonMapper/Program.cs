@@ -27,10 +27,18 @@ namespace JsonMapper
             File.WriteAllText(folderPath + tragetFile, targetJson);
 
 
-            var secondData = JsonHandler.UnFlettn(targetJson);
-            var secondJson = JsonConvert.SerializeObject(secondData);
+            var jsonDic = new JsonDictionary(flat);
 
-            File.WriteAllText(folderPath + secondFile, secondJson);
+            var isActive = jsonDic.GetObjectOrGroup("isActive");
+            Console.WriteLine(isActive);
+            var address = jsonDic.GetObjectOrGroup("address");
+            Console.WriteLine(address);
+            var address_street = jsonDic.GetObjectOrGroup("address.street");
+            Console.WriteLine(address_street);
+            //var secondData = JsonHandler.UnFlettn(targetJson);
+            //var secondJson = JsonConvert.SerializeObject(secondData);
+
+            //File.WriteAllText(folderPath + secondFile, secondJson);
 
 
             Console.Read();
